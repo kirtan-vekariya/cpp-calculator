@@ -1,5 +1,5 @@
 #include <iostream>
-#include <cmath> // Feature 2 & 3: Needed for pow() and fmod()
+#include <cmath>
 
 using namespace std;
 
@@ -11,19 +11,22 @@ int main() {
     cout << "=======================================\n";
     cout << "           C++ CLI Calculator          \n";
     cout << " Supported: +, -, *, /, ^ (pow), % (mod)\n";
+    cout << " Trig (Rads): s (sin), c (cos), t (tan)\n";
+    cout << " Inv Trig:    S (asin/), C (acos), T (atan)\n";
+    cout << " where value in trignimetric functions are in considered in radian\n";
     cout << " Type 'q' or 'e' as the operator to exit\n";
     cout << "=======================================\n";
 
     // Feature 1: Continuous execution loop
     while (true) {
-        cout << "\nEnter first number: ";
+        cout << "\nEnter first number (or angle in radians): ";
         if (!(cin >> num1)) {
             // Feature 4: Input validation (handles non-numeric inputs)
             cout << "Invalid input. Exiting program...\n";
             break;
         }
 
-        cout << "Enter operator (+, -, *, /, ^, %, or 'q' to quit): ";
+        cout << "Enter operator (+, -, *, /, ^, %, s, c, t, S, C, T, or 'q' to quit): ";
         cin >> op;
 
         // Feature 5: Immediate exit check via operator input
@@ -32,10 +35,17 @@ int main() {
             break;
         }
 
-        cout << "Enter second number: ";
-        if (!(cin >> num2)) {
-            cout << "Invalid input. Exiting program...\n";
-            break;
+        // Check if the operation only requires one number
+        bool isUnary = (op == 's' || op == 'c' || op == 't' || 
+                        op == 'S' || op == 'C' || op == 'T');
+
+        // Only prompt for num2 if it's NOT a unary (trig) function
+        if (!isUnary) {
+            cout << "Enter second number: ";
+            if (!(cin >> num2)) {
+                cout << "Invalid input. Exiting program...\n";
+                break;
+            }
         }
 
         switch (op) {
@@ -49,7 +59,6 @@ int main() {
             case '*':
                 cout << "Result: " << num1 << " * " << num2 << " = " << num1 * num2 << "\n";
                 break;
-
             // Existing division with zero-division safeguard
             case '/':
                 if (num2 != 0) {
@@ -58,12 +67,10 @@ int main() {
                     cout << "Error: Division by zero is undefined.\n";
                 }
                 break;
-
             // Feature 2: Exponentiation using pow() from <cmath>
             case '^':
                 cout << "Result: " << num1 << " ^ " << num2 << " = " << pow(num1, num2) << "\n";
                 break;
-
             // Feature 3: Modulo for floating-point values using fmod()
             case '%':
                 if (num2 != 0) {
@@ -71,6 +78,34 @@ int main() {
                 } else {
                     cout << "Error: Modulo by zero is undefined.\n";
                 }
+                break;
+
+            // --- TRIGONOMETRIC FUNCTIONS ---
+            case 's':
+                cout << "Result: sin(" << num1 << ") = " << sin(num1) << "\n";
+                break;
+            case 'c':
+                cout << "Result: cos(" << num1 << ") = " << cos(num1) << "\n";
+                break;
+            case 't':
+                cout << "Result: tan(" << num1 << ") = " << tan(num1) << "\n";
+                break;
+            case 'S':
+                // arcsin is only valid for domain [-1, 1]
+                if (num1 >= -1 && num1 <= 1)
+                    cout << "Result: asin(" << num1 << ") = " << asin(num1) << "\n";
+                else
+                    cout << "Error: Domain of arcsin is [-1, 1].\n";
+                break;
+            case 'C':
+                // arccos is only valid for domain [-1, 1]
+                if (num1 >= -1 && num1 <= 1)
+                    cout << "Result: acos(" << num1 << ") = " << acos(num1) << "\n";
+                else
+                    cout << "Error: Domain of arccos is [-1, 1].\n";
+                break;
+            case 'T':
+                cout << "Result: atan(" << num1 << ") = " << atan(num1) << "\n";
                 break;
 
             default:
