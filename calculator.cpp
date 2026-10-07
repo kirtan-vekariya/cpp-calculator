@@ -13,7 +13,8 @@ int main() {
     cout << " Supported: +, -, *, /, ^ (pow), % (mod)\n";
     cout << " Trig (Rads): s (sin), c (cos), t (tan)\n";
     cout << " Inv Trig:    S (asin/), C (acos), T (atan)\n";
-    cout << " where value in trignimetric functions are in considered in radian\n";
+    cout << " trignimetric functions are calculated in radian\n";
+    cout << " Logarithms:  l (log10), n (ln)\n";
     cout << " Type 'q' or 'e' as the operator to exit\n";
     cout << "=======================================\n";
 
@@ -26,7 +27,7 @@ int main() {
             break;
         }
 
-        cout << "Enter operator (+, -, *, /, ^, %, s, c, t, S, C, T, or 'q' to quit): ";
+        cout << "Enter operator (+, -, *, /, ^, %, s, c, t, S, C, T, l, n or 'q' to quit): ";
         cin >> op;
 
         // Feature 5: Immediate exit check via operator input
@@ -37,7 +38,8 @@ int main() {
 
         // Check if the operation only requires one number
         bool isUnary = (op == 's' || op == 'c' || op == 't' || 
-                        op == 'S' || op == 'C' || op == 'T');
+                        op == 'S' || op == 'C' || op == 'T' ||
+                        op == 'l' || op == 'n');
 
         // Only prompt for num2 if it's NOT a unary (trig) function
         if (!isUnary) {
@@ -106,6 +108,21 @@ int main() {
                 break;
             case 'T':
                 cout << "Result: atan(" << num1 << ") = " << atan(num1) << "\n";
+                break;
+            case 'l':
+                if (num1 > 0) {
+                    cout << "Result: log10(" << num1 << ") = " << log10(num1) << "\n";
+                } else {
+                    cout << "Error: Logarithm is undefined for zero or negative numbers.\n";
+                }
+                break;
+
+            case 'n':
+                if (num1 > 0) {
+                    cout << "Result: ln(" << num1 << ") = " << log(num1) << "\n"; // Note: log() in C++ computes the natural logarithm (ln)
+                } else {
+                    cout << "Error: Natural logarithm is undefined for zero or negative numbers.\n";
+                }
                 break;
 
             default:
