@@ -15,6 +15,7 @@ int main() {
     cout << " Inv Trig:    S (asin/), C (acos), T (atan)\n";
     cout << " trignimetric functions are calculated in radian\n";
     cout << " Logarithms:  l (log10), n (ln)\n";
+    cout << "              z (log(num1) with base num2)\n";
     cout << " Type 'q' or 'e' as the operator to exit\n";
     cout << "=======================================\n";
 
@@ -27,7 +28,7 @@ int main() {
             break;
         }
 
-        cout << "Enter operator (+, -, *, /, ^, %, s, c, t, S, C, T, l, n or 'q' to quit): ";
+        cout << "Enter operator (+, -, *, /, ^, %, s, c, t, S, C, T, l, n, z or 'q' to quit): ";
         cin >> op;
 
         // Feature 5: Immediate exit check via operator input
@@ -124,6 +125,10 @@ int main() {
                     cout << "Error: Natural logarithm is undefined for zero or negative numbers.\n";
                 }
                 break;
+            
+            case 'z':
+                cout << "Result: " << "log(" << num1  << ")(" << num2 << ")" << " = " << log(num1) / log(num2) << "\n";
+                break;
 
             default:
                 cout << "Error: '" << op << "' is not a recognized operator.\n";
@@ -138,6 +143,5 @@ int main() {
             break;
         }
     }
-
     return 0;
 }
