@@ -103,13 +103,14 @@ int main() {
     cout << " trignimetric functions are calculated in radian\n";
     cout << " Logarithms:  l (log10), n (ln)\n";
     cout << "              z (log(num1) with base num2)\n";
-    cout << " factorials:  f(n!)\n";
-    cout << " solver:      quadretic(2)(ax^2+bx+c)\n";
-    cout << " solver:      cubic(3)(ax^3+bx^2+cx+d)\n";
+    cout << " factorials:  f (n!)\n";
+    cout << " solver:      2 (quadretic)(ax^2+bx+c)\n";
+    cout << " solver:      3 (cubic)(ax^3+bx^2+cx+d)\n";
+    cout << " permutation: a (n P r)\n";
+    cout << " combinations:b (n C r)\n";
     cout << " Type 'q' or 'e' as the operator to exit\n";
     cout << "=======================================\n";
 
-    // Feature 1: Continuous execution loop
     while (true) {
         cout << "\nEnter first number (or 'a' for solvers): ";
         if (!(cin >> num1)) {
@@ -117,21 +118,18 @@ int main() {
             break;
         }
 
-        cout << "Enter operator (+, -, *, /, ^, %, s, c, t, S, C, T, l, n, z, f, 2, 3 or 'q' to quit): ";
+        cout << "Enter operator (+, -, *, /, ^, %, s, c, t, S, C, T, l, n, z, f, 2, 3, a, b or 'q' to quit): ";
         cin >> op;
 
-        // Feature 5: Immediate exit check via operator input
         if (op == 'q' || op == 'Q' || op == 'e' || op == 'E') {
             cout << "Exit command received. Goodbye!\n";
             break;
         }
 
-        // Check if the operation only requires one number
         bool isUnary = (op == 's' || op == 'c' || op == 't' || 
                         op == 'S' || op == 'C' || op == 'T' ||
                         op == 'l' || op == 'n' || op == 'f' );
 
-        // Only prompt for num2 if it's NOT a unary (trig) function
         if (!isUnary) {
             cout << "Enter second number (or 'a' for solvers): ";
             if (!(cin >> num2)) {
@@ -141,7 +139,6 @@ int main() {
         }
 
         switch (op) {
-            // Standard basic operations
             case '+':
                 cout << "Result: " << num1 << " + " << num2 << " = " << num1 + num2 << "\n";
                 break;
@@ -151,7 +148,6 @@ int main() {
             case '*':
                 cout << "Result: " << num1 << " * " << num2 << " = " << num1 * num2 << "\n";
                 break;
-            // Existing division with zero-division safeguard
             case '/':
                 if (num2 != 0) {
                     cout << "Result: " << num1 << " / " << num2 << " = " << num1 / num2 << "\n";
@@ -159,11 +155,9 @@ int main() {
                     cout << "Error: Division by zero is undefined.\n";
                 }
                 break;
-            // Feature 2: Exponentiation using pow() from <cmath>
             case '^':
                 cout << "Result: " << num1 << " ^ " << num2 << " = " << pow(num1, num2) << "\n";
                 break;
-            // Feature 3: Modulo for floating-point values using fmod()
             case '%':
                 if (num2 != 0) {
                     cout << "Result: " << num1 << " % " << num2 << " = " << fmod(num1, num2) << "\n";
@@ -172,7 +166,6 @@ int main() {
                 }
                 break;
 
-            // --- TRIGONOMETRIC FUNCTIONS ---
             case 's':
                 cout << "Result: sin(" << num1 << ") = " << sin(num1) << "\n";
                 break;
@@ -183,14 +176,12 @@ int main() {
                 cout << "Result: tan(" << num1 << ") = " << tan(num1) << "\n";
                 break;
             case 'S':
-                // arcsin is only valid for domain [-1, 1]
                 if (num1 >= -1 && num1 <= 1)
                     cout << "Result: asin(" << num1 << ") = " << asin(num1) << "\n";
                 else
                     cout << "Error: Domain of arcsin is [-1, 1].\n";
                 break;
             case 'C':
-                // arccos is only valid for domain [-1, 1]
                 if (num1 >= -1 && num1 <= 1)
                     cout << "Result: acos(" << num1 << ") = " << acos(num1) << "\n";
                 else
@@ -246,12 +237,18 @@ int main() {
                 break;
             }
 
+            case 'a':
+                cout <<  num1 << " P " << num2 << " is equal to : " << factorial(num1) / factorial(num1 - num2) << "\n";
+                break;
+            case 'b':
+                cout <<  num1 << " C " << num2 << " yis equal to : " << factorial(num1) / (factorial(num2) * factorial(num1 - num2)) << "\n";
+                break;
+
             default:
                 cout << "Error: '" << op << "' is not a recognized operator.\n";
                 break;
         }
 
-        // Feature 6: End-of-cycle exit prompt
         cout << "\nPerform another calculation? (y/n): ";
         cin >> choice;
         if (choice == 'n' || choice == 'N' || choice == 'q' || choice == 'Q') {
