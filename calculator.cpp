@@ -131,7 +131,7 @@ int main() {
                         op == 'l' || op == 'n' || op == 'f' );
 
         if (!isUnary) {
-            cout << "Enter second number (or 'a' for solvers): ";
+            cout << "Enter second number (or 'b' for solvers): ";
             if (!(cin >> num2)) {
                 cout << "Invalid input. Exiting program...\n";
                 break;
