@@ -1,6 +1,6 @@
 #include <iostream>
 #include <cmath>
-
+#include <vector>
 using namespace std;
 
 const double PI = acos(-1.0);
@@ -111,6 +111,62 @@ void solveLinearSystem(double a1, double b1, double c1, double a2, double b2, do
         cout << "y = " << y << "\n";
     }
 }
+void squareMatrixAlgebra(int n) {
+    if (n <= 0) {
+        cout << "Matrix size must be greater than 0.\n";
+        return;
+    }
+
+    vector<vector<double>> A(n, vector<double>(n));
+    vector<vector<double>> B(n, vector<double>(n));
+    vector<vector<double>> C(n, vector<double>(n, 0.0));
+
+    cout << "\n--- Matrix A ---\n";
+    cout << "Enter the " << n * n << " elements for Matrix A (row by row):\n";
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            cin >> A[i][j];
+        }
+    }
+
+    cout << "\n--- Matrix B ---\n";
+    cout << "Enter the " << n * n << " elements for Matrix B (row by row):\n";
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            cin >> B[i][j];
+        }
+    }
+
+    char matOp;
+    cout << "\nChoose matrix operation (+, -, *): ";
+    cin >> matOp;
+
+    if (matOp == '+') {
+        for (int i = 0; i < n; i++)
+            for (int j = 0; j < n; j++)
+                C[i][j] = A[i][j] + B[i][j];
+    } else if (matOp == '-') {
+        for (int i = 0; i < n; i++)
+            for (int j = 0; j < n; j++)
+                C[i][j] = A[i][j] - B[i][j];
+    } else if (matOp == '*') {
+        for (int i = 0; i < n; i++)
+            for (int j = 0; j < n; j++)
+                for (int k = 0; k < n; k++)
+                    C[i][j] += A[i][k] * B[k][j];
+    } else {
+        cout << "Invalid matrix operation.\n";
+        return;
+    }
+
+    cout << "\nResulting Matrix:\n";
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            cout << C[i][j] << "\t";
+        }
+        cout << "\n";
+    }
+}
 
 int main() {
     char op;
@@ -131,6 +187,7 @@ int main() {
     cout << "              4 (linear 2 vars)(a1x+b1y=c1, a2x+b2y=c2)\n";
     cout << " permutation: a (n P r)\n";
     cout << " combinations:b (n C r)\n";
+    cout << " matrices:    m (nxn matrix algebra)\n";
     cout << " Type 'q' or 'e' as the operator to exit\n";
     cout << "=======================================\n";
 
@@ -141,7 +198,7 @@ int main() {
             break;
         }
 
-        cout << "Enter operator (+, -, *, /, ^, %, s, c, t, S, C, T, l, n, z, f, 2, 3, 4, a, b or 'q' to quit): ";
+        cout << "Enter operator (+, -, *, /, ^, %, s, c, t, S, C, T, l, n, z, f, 2, 3, 4, a, b, m or 'q' to quit): ";
         cin >> op;
 
         if (op == 'q' || op == 'Q' || op == 'e' || op == 'E') {
@@ -151,7 +208,8 @@ int main() {
 
         bool isUnary = (op == 's' || op == 'c' || op == 't' || 
                         op == 'S' || op == 'C' || op == 'T' ||
-                        op == 'l' || op == 'n' || op == 'f' );
+                        op == 'l' || op == 'n' || op == 'f' ||
+                        op == 'm' );
 
         if (!isUnary) {
             cout << "Enter second number (or 'b' for solvers): ";
@@ -280,11 +338,24 @@ int main() {
             }
 
             case 'a':
+                if(num2 > num1 || num1 == 0){
+                    cout << "invalid input";
+                    break;
+                }
                 cout <<  num1 << " P " << num2 << " is equal to : " << factorial(num1) / factorial(num1 - num2) << "\n";
                 break;
             case 'b':
+                if(num2 > num1 || num1 == 0){
+                    cout << "invalid input";
+                    break;
+                }
                 cout <<  num1 << " C " << num2 << " yis equal to : " << factorial(num1) / (factorial(num2) * factorial(num1 - num2)) << "\n";
                 break;
+
+            case 'm': 
+            cout << "\nStarting Square Matrix Algebra for " << num1 << "x" << num1 << " matrices.\n";
+            squareMatrixAlgebra(static_cast<int>(num1));
+            break;
 
             default:
                 cout << "Error: '" << op << "' is not a recognized operator.\n";
