@@ -1,5 +1,6 @@
 #include <iostream>
 #include <cmath>
+
 using namespace std;
 
 const double PI = acos(-1.0);
@@ -89,6 +90,27 @@ void solveCubic(double a, double b, double c, double d) {
         cout << "x3 = " << root3 << "\n";
     }
 }
+void solveLinearSystem(double a1, double b1, double c1, double a2, double b2, double c2) {
+    double determinant = (a1 * b2) - (a2 * b1);
+    
+    if (abs(determinant) < EPSILON) {
+        double dx = (c1 * b2) - (c2 * b1);
+        double dy = (a1 * c2) - (a2 * c1);
+        
+        if (abs(dx) < EPSILON && abs(dy) < EPSILON) {
+            cout << "Infinite solutions (The equations represent the same line).\n";
+        } else {
+            cout << "No solution (The lines are parallel and never intersect).\n";
+        }
+    } else {
+        double x = ((c1 * b2) - (c2 * b1)) / determinant;
+        double y = ((a1 * c2) - (a2 * c1)) / determinant;
+        
+        cout << "Unique solution:\n";
+        cout << "x = " << x << "\n";
+        cout << "y = " << y << "\n";
+    }
+}
 
 int main() {
     char op;
@@ -101,11 +123,12 @@ int main() {
     cout << " Trig (Rads): s (sin), c (cos), t (tan)\n";
     cout << " Inv Trig:    S (asin), C (acos), T (atan)\n";
     cout << " trignimetric functions are calculated in radian\n";
-    cout << " Logarithms:  l (log10), n (ln)\n";
+    cout << " Logarithms:  l (log10), n (ln),\n";
     cout << "              z (log(num1) with base num2)\n";
     cout << " factorials:  f (n!)\n";
-    cout << " solver:      2 (quadretic)(ax^2+bx+c)\n";
-    cout << " solver:      3 (cubic)(ax^3+bx^2+cx+d)\n";
+    cout << " solver:      2 (quadretic)(ax^2+bx+c),\n";
+    cout << "              3 (cubic)(ax^3+bx^2+cx+d),\n";
+    cout << "              4 (linear 2 vars)(a1x+b1y=c1, a2x+b2y=c2)\n";
     cout << " permutation: a (n P r)\n";
     cout << " combinations:b (n C r)\n";
     cout << " Type 'q' or 'e' as the operator to exit\n";
@@ -118,7 +141,7 @@ int main() {
             break;
         }
 
-        cout << "Enter operator (+, -, *, /, ^, %, s, c, t, S, C, T, l, n, z, f, 2, 3, a, b or 'q' to quit): ";
+        cout << "Enter operator (+, -, *, /, ^, %, s, c, t, S, C, T, l, n, z, f, 2, 3, 4, a, b or 'q' to quit): ";
         cin >> op;
 
         if (op == 'q' || op == 'Q' || op == 'e' || op == 'E') {
@@ -235,6 +258,25 @@ int main() {
                 cout << "\nSolving Cubic: " << num1 << "x^3 + " << num2 << "x^2 + " << c_cub << "x + " << d_cub << " = 0\n";
                 solveCubic(num1, num2, c_cub, d_cub);
                 break;
+            }
+
+            case '4': {
+            double a1 = num1, b1 = num2, c1, a2, b2, c2;
+            cout << "Enter coefficient c1: ";
+            if (!(cin >> c1)) break;
+            cout << "Enter coefficient a2: ";
+            if (!(cin >> a2)) break;
+            cout << "Enter coefficient b2: ";
+            if (!(cin >> b2)) break;
+            cout << "Enter coefficient c2: ";
+            if (!(cin >> c2)) break;
+            
+            cout << "\nSolving System:\n";
+            cout << a1 << "x + " << b1 << "y = " << c1 << "\n";
+            cout << a2 << "x + " << b2 << "y = " << c2 << "\n";
+            
+            solveLinearSystem(a1, b1, c1, a2, b2, c2);
+            break;
             }
 
             case 'a':
