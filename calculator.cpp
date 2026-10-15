@@ -111,6 +111,70 @@ void solveLinearSystem(double a1, double b1, double c1, double a2, double b2, do
         cout << "y = " << y << "\n";
     }
 }
+
+void getCofactor(const vector<vector<double>>& matrix, vector<vector<double>>& temp, int p, int q, int n) {
+    int i = 0, j = 0;
+    for (int row = 0; row < n; row++) {
+        for (int col = 0; col < n; col++) {
+            if (row != p && col != q) {
+                temp[i][j++] = matrix[row][col];
+                if (j == n - 1) {
+                    j = 0;
+                    i++;
+                }
+            }
+        }
+    }
+}
+double getDeterminant(const vector<vector<double>>& matrix, int n) {
+    if (n == 1) return matrix[0][0];
+
+    double D = 0;
+    vector<vector<double>> temp(n, vector<double>(n));
+    int sign = 1;
+
+    for (int f = 0; f < n; f++) {
+        getCofactor(matrix, temp, 0, f, n);
+        D += sign * matrix[0][f] * getDeterminant(temp, n - 1);
+        sign = -sign;
+    }
+    return D;
+}
+void getAdjoint(const vector<vector<double>>& matrix, vector<vector<double>>& adj, int n) {
+    if (n == 1) {
+        adj[0][0] = 1;
+        return;
+    }
+    
+    int sign = 1;
+    vector<vector<double>> temp(n, vector<double>(n));
+
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            getCofactor(matrix, temp, i, j, n);
+            sign = ((i + j) % 2 == 0) ? 1 : -1;
+            // Interchanging rows and columns to get the transpose of the cofactor matrix
+            adj[j][i] = sign * getDeterminant(temp, n - 1);
+        }
+    }
+}
+bool getInverse(const vector<vector<double>>& matrix, vector<vector<double>>& inverse, int n) {
+    double det = getDeterminant(matrix, n);
+    if (abs(det) < EPSILON) {
+        cout << "Singular matrix (determinant is 0), cannot find its inverse.\n";
+        return false;
+    }
+
+    vector<vector<double>> adj(n, vector<double>(n));
+    getAdjoint(matrix, adj, n);
+
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            inverse[i][j] = adj[i][j] / det;
+        }
+    }
+    return true;
+}
 void squareMatrixAlgebra(int n) {
     if (n <= 0) {
         cout << "Matrix size must be greater than 0.\n";
@@ -118,7 +182,6 @@ void squareMatrixAlgebra(int n) {
     }
 
     vector<vector<double>> A(n, vector<double>(n));
-    vector<vector<double>> B(n, vector<double>(n));
     vector<vector<double>> C(n, vector<double>(n, 0.0));
 
     cout << "\n--- Matrix A ---\n";
@@ -129,6 +192,34 @@ void squareMatrixAlgebra(int n) {
         }
     }
 
+    char matOp;
+    cout << "\nChoose matrix operation (+, -, *, i for inverse, a for adjoint): ";
+    cin >> matOp;
+
+    if (matOp == 'i' || matOp == 'I') {
+        if (getInverse(A, C, n)) {
+            cout << "\nResulting Inverse Matrix:\n";
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < n; j++) {
+                    cout << C[i][j] << "\t";
+                }
+                cout << "\n";
+            }
+        }
+        return;
+    } else if (matOp == 'a' || matOp == 'A') {
+        getAdjoint(A, C, n);
+        cout << "\nResulting Adjoint Matrix:\n";
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                cout << C[i][j] << "\t";
+            }
+            cout << "\n";
+        }
+        return;
+    }
+
+    vector<vector<double>> B(n, vector<double>(n));
     cout << "\n--- Matrix B ---\n";
     cout << "Enter the " << n * n << " elements for Matrix B (row by row):\n";
     for (int i = 0; i < n; i++) {
@@ -136,10 +227,6 @@ void squareMatrixAlgebra(int n) {
             cin >> B[i][j];
         }
     }
-
-    char matOp;
-    cout << "\nChoose matrix operation (+, -, *): ";
-    cin >> matOp;
 
     if (matOp == '+') {
         for (int i = 0; i < n; i++)
@@ -192,7 +279,7 @@ int main() {
     cout << "=======================================\n";
 
     while (true) {
-        cout << "\nEnter first number (or 'a' for solvers): ";
+        cout << "\nEnter first number (or 'a' for solvers or 'm' for m x m metrix): ";
         if (!(cin >> num1)) {
             cout << "Invalid input. Exiting program...\n";
             break;
