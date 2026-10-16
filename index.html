@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Scientific & Math Calculator</title>
+<style>
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    padding: 25px;
+    font-family: Arial, sans-serif;
+    background: #0b1020;
+    color: #eef3ff;
+}
+
+main {
+    max-width: 1000px;
+    margin: auto;
+}
+
+h1 { color: #73e0c1; }
+
+.card {
+    background: #17223a;
+    border: 1px solid #34425f;
+    border-radius: 16px;
+    padding: 20px;
+    margin: 20px 0;
+}
+
+label {
+    display: block;
+    margin: 12px 0 6px;
+    color: #a8b5d1;
+}
+
+input, select {
+    padding: 12px;
+    width: 100%;
+    background: #0c1426;
+    color: white;
+    border: 1px solid #34425f;
+    border-radius: 8px;
+    font-size: 16px;
+}
+
+button {
+    padding: 12px 18px;
+    margin-top: 15px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    background: #73e0c1;
+    color: #071a18;
+}
+
+.result {
+    margin-top: 18px;
+    padding: 15px;
+    background: #0a1323;
+    border-radius: 8px;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+.tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.tabs button { margin-top: 0; }
+
+.hidden { display: none; }
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.matrix {
+    display: grid;
+    gap: 6px;
+    margin: 12px 0;
+}
+
+.matrix input { min-width: 0; }
+
+@media (max-width: 600px) {
+    body { padding: 12px; }
+    .grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<main>
+<h1>Scientific & Math Calculator</h1>
+<p>Arithmetic, scientific functions, equation solvers and matrices.</p>
+
+<div class="tabs">
+<button onclick="showTab('basic')">Scientific</button>
+<button onclick="showTab('equations')">Equation Solvers</button>
+<button onclick="showTab('matrices')">Matrices</button>
+</div>
+
+<section id="basic" class="card">
+<h2>Scientific Calculator</h2>
+
+<label for="x">First number (x)</label>
+<input id="x" type="number" step="any" value="12">
+
+<label for="op">Operation</label>
+<select id="op" onchange="updateOperation()">
+<option value="+">Addition (+)</option>
+<option value="-">Subtraction (-)</option>
+<option value="*">Multiplication (*)</option>
+<option value="/">Division (/)</option>
+<option value="^">Power</option>
+<option value="%">Remainder (%)</option>
+<option value="sin">sin(x)</option>
+<option value="cos">cos(x)</option>
+<option value="tan">tan(x)</option>
+<option value="asin">asin(x)</option>
+<option value="acos">acos(x)</option>
+<option value="atan">atan(x)</option>
+<option value="sqrt">Square root</option>
+<option value="log10">log10(x)</option>
+<option value="ln">Natural logarithm</option>
+<option value="factorial">Factorial (x!)</option>
+<option value="logbase">Logarithm with base y</option>
+<option value="perm">Permutation (nPr)</option>
+<option value="comb">Combination (nCr)</option>
+</select>
+
+<div id="secondWrap">
+<label for="y">Second number (y)</label>
+<input id="y" type="number" step="any" value="3">
+</div>
+
+<button onclick="calculate()">Calculate</button>
+<button onclick="clearInputs()">Clear</button>
+<div id="result" class="result">Result appears here.</div>
+<p>Trigonometric functions use radians.</p>
+</section>
+
+<section id="equations" class="card hidden">
+<h2>Equation Solvers</h2>
+<label for="eqType">Select equation</label>
+<select id="eqType" onchange="updateEquation()">
+<option value="quad">Quadratic: ax² + bx + c = 0</option>
+<option value="cubic">Cubic: ax³ + bx² + cx + d = 0</option>
+<option value="linear">Two linear equations</option>
+</select>
+
+<div id="quadFields" class="grid">
+<div><label>a</label><input id="qa" type="number" value="1" step="any"></div>
+<div><label>b</label><input id="qb" type="number" value="-3" step="any"></div>
+<div><label>c</label><input id="qc" type="number" value="2" step="any"></div>
+</div>
+
+<div id="cubicFields" class="grid hidden">
+<div><label>a</label><input id="ca" type="number" value="1" step="any"></div>
+<div><label>b</label><input id="cb" type="number" value="-6" step="any"></div>
+<div><label>c</label><input id="cc" type="number" value="11" step="any"></div>
+<div><label>d</label><input id="cd" type="number" value="-6" step="any"></div>
+</div>
+
+<div id="linearFields" class="grid hidden">
+<div><label>a1</label><input id="la1" type="number" value="1"></div>
+<div><label>b1</label><input id="lb1" type="number" value="1"></div>
+<div><label>c1</label><input id="lc1" type="number" value="5"></div>
+<div><label>a2</label><input id="la2" type="number" value="2"></div>
+<div><label>b2</label><input id="lb2" type="number" value="-1"></div>
+<div><label>c2</label><input id="lc2" type="number" value="1"></div>
+</div>
+
+<button onclick="solveEquation()">Solve Equation</button>
+<div id="eqResult" class="result">Solution appears here.</div>
+</section>
+
+<section id="matrices" class="card hidden">
+<h2>Square Matrix Algebra</h2>
+
+<label for="size">Matrix size</label>
+<select id="size" onchange="renderMatrices()">
+<option>2</option>
+<option>3</option>
+<option>1</option>
+<option>4</option>
+<option>5</option>
+</select>
+
+<label for="matOp">Operation</label>
+<select id="matOp" onchange="renderMatrices()">
+<option value="add">A + B</option>
+<option value="sub">A - B</option>
+<option value="mul">A × B</option>
+<option value="det">Determinant of A</option>
+<option value="inv">Inverse of A</option>
+<option value="adj">Adjoint of A</option>
+</select>
+
+<div id="matrixInputs"></div>
+<button onclick="calculateMatrix()">Calculate Matrix</button>
+<button onclick="renderMatrices()">Reset</button>
+<div id="matrixResult" class="result">Matrix result appears here.</div>
+</section>
+</main>
+
+<script>
+const $ = id => document.getElementById(id);
+const number = id => Number($(id).value);
+const fmt = n => Number.isFinite(n) ? 
+    (Math.abs(n) < 1e-12 ? "0" : String(Number(n.toPrecision(12)))) : String(n);
+
+function factorial(n) {
+    if (!Number.isInteger(n) || n < 0 || n > 170)
+        throw Error("Enter an integer between 0 and 170.");
+    let r = 1;
+    for (let i = 2; i <= n; i++) r *= i;
+    return r;
+}
+
+function updateOperation() {
+    const unary = [
+        "sin", "cos", "tan", "asin", "acos", "atan",
+        "sqrt", "log10", "ln", "factorial"
+    ];
+    $("secondWrap").classList.toggle(
+        "hidden", unary.includes($("op").value)
+    );
+}
+
+function calculate() {
+    const x = number("x");
+    const y = number("y");
+    const op = $("op").value;
+    let r;
+
+    try {
+        if (!Number.isFinite(x))
+            throw Error("Enter a valid first number.");
+
+        switch (op) {
+            case "+":
+                r = x + y; break;
+            case "-":
+                r = x - y; break;
+            case "*":
+                r = x * y; break;
+            case "/":
+                if (y === 0) throw Error("Division by zero.");
+                r = x / y; break;
+            case "^":
+                r = Math.pow(x, y); break;
+            case "%":
+                if (y === 0) throw Error("Remainder by zero.");
+                r = x % y; break;
+            case "sin":
+                r = Math.sin(x); break;
+            case "cos":
+                r = Math.cos(x); break;
+            case "tan":
+                r = Math.tan(x); break;
+            case "asin":
+                if (Math.abs(x) > 1) throw Error("asin requires -1 ≤ x ≤ 1.");
+                r = Math.asin(x); break;
+            case "acos":
+                if (Math.abs(x) > 1) throw Error("acos requires -1 ≤ x ≤ 1.");
+                r = Math.acos(x); break;
+            case "atan":
+                r = Math.atan(x); break;
+            case "sqrt":
+                if (x < 0) throw Error("Square root requires x ≥ 0.");
+                r = Math.sqrt(x); break;
+            case "log10":
+                if (x <= 0) throw Error("Log requires x > 0.");
+                r = Math.log10(x); break;
+            case "ln":
+                if (x <= 0) throw Error("ln requires x > 0.");
+                r = Math.log(x); break;
+            case "factorial":
+                r = factorial(x); break;
+            case "logbase":
+                if (x <= 0 || y <= 0 || y === 1)
+                    throw Error("Require x > 0 and base y > 0, y ≠ 1.");
+                r = Math.log(x) / Math.log(y); break;
+            case "perm":
+            case "comb":
+                if (!Number.isInteger(x) || !Number.isInteger(y) ||
+                    x < 0 || y < 0 || y > x || x > 170)
+                    throw Error("Require integers 0 ≤ r ≤ n ≤ 170.");
+                r = op === "perm"
+                    ? factorial(x) / factorial(x-y)
+                    : factorial(x) / (factorial(y)*factorial(x-y));
+                break;
+        }
+
+        if (!Number.isFinite(r)) throw Error("Result is not finite.");
+        $("result").textContent = "Result: " + fmt(r);
+    } catch (e) {
+        $("result").textContent = "Error: " + e.message;
+    }
+}
+
+function clearInputs() {
+    $("x").value = "";
+    $("y").value = "";
+    $("result").textContent = "Cleared.";
+}
+
+function showTab(id) {
+    ["basic", "equations", "matrices"].forEach(name =>
+        $(name).classList.toggle("hidden", name !== id)
+    );
+}
+
+function updateEquation() {
+    const type = $("eqType").value;
+    ["quad", "cubic", "linear"].forEach(name =>
+        $(name + "Fields").classList.toggle("hidden", name !== type)
+    );
+}
+
+function solveEquation() {
+    const out = $("eqResult");
+    try {
+        const eps = 1e-10;
+        let s = "";
+
+        if ($("eqType").value === "quad") {
+            const a=number("qa"), b=number("qb"), c=number("qc");
+
+            if (a === 0) {
+                if (b === 0)
+                    s = c === 0 ? "Every x is a solution." : "No solution.";
+                else s = "x = " + fmt(-c/b);
+            } else {
+                const d = b*b - 4*a*c;
+                if (d > eps) {
+                    s = "x1 = " + fmt((-b+Math.sqrt(d))/(2*a)) +
+                        "\nx2 = " + fmt((-b-Math.sqrt(d))/(2*a));
+                } else if (Math.abs(d) <= eps) {
+                    s = "Repeated root: x = " + fmt(-b/(2*a));
+                } else {
+                    const re=-b/(2*a), im=Math.sqrt(-d)/(2*a);
+                    s = "x1 = " + fmt(re)+" + "+fmt(im)+"i" +
+                        "\nx2 = " + fmt(re)+" - "+fmt(im)+"i";
+                }
+            }
+        } else if ($("eqType").value === "linear") {
+            const a=number("la1"), b=number("lb1"), c=number("lc1");
+            const d=number("la2"), e=number("lb2"), f=number("lc2");
+            const det=a*e-d*b;
+
+            if (Math.abs(det) < eps) {
+                s = Math.abs(c*e-f*b) < eps &&
+                    Math.abs(a*f-d*c) < eps
+                    ? "Infinitely many solutions."
+                    : "No solution.";
+            } else {
+                s = "x = "+fmt((c*e-f*b)/det)+
+                    "\ny = "+fmt((a*f-d*c)/det);
+            }
+        } else {
+            const a=number("ca"), b=number("cb");
+            const c=number("cc"), d=number("cd");
+            if (Math.abs(a) < eps) throw Error("Cubic coefficient a cannot be zero.");
+
+            const A=b/a, B=c/a, C=d/a;
+            const p=B-A*A/3;
+            const q=2*A*A*A/27-A*B/3+C;
+            const disc=q*q/4+p*p*p/27;
+
+            if (disc > eps) {
+                const u=Math.cbrt(-q/2+Math.sqrt(disc));
+                const v=Math.cbrt(-q/2-Math.sqrt(disc));
+                const re=-(u+v)/2-A/3;
+                const im=Math.sqrt(3)*(u-v)/2;
+                s="x1 = "+fmt(u+v-A/3)+
+                  "\nx2 = "+fmt(re)+" + "+fmt(im)+"i"+
+                  "\nx3 = "+fmt(re)+" - "+fmt(im)+"i";
+            } else if (disc >= -eps) {
+                const u=Math.cbrt(-q/2);
+                s="x1 = "+fmt(2*u-A/3)+
+                  "\nx2 = x3 = "+fmt(-u-A/3);
+            } else {
+                const r=2*Math.sqrt(-p/3);
+                const theta=Math.acos(Math.max(-1,Math.min(1,
+                    (3*q/(2*p))*Math.sqrt(-3/p))));
+                s=[0,1,2].map(k =>
+                    "x"+(k+1)+" = "+
+                    fmt(r*Math.cos((theta-2*Math.PI*k)/3)-A/3)
+                ).join("\n");
+            }
+        }
+
+        out.textContent = s;
+    } catch (e) {
+        out.textContent = "Error: " + e.message;
+    }
+}
+
+function determinant(M) {
+    if (M.length === 1) return M[0][0];
+    let sum = 0;
+    for (let j=0; j<M.length; j++) {
+        const minor = M.slice(1).map(row =>
+            row.filter((_,k) => k !== j)
+        );
+        sum += (j%2 ? -1 : 1)*M[0][j]*determinant(minor);
+    }
+    return sum;
+}
+
+function transpose(M) {
+    return M[0].map((_,j) => M.map(row => row[j]));
+}
+
+function inverse(M) {
+    const d = determinant(M), n = M.length;
+    if (Math.abs(d) < 1e-10) throw Error("Matrix has no inverse.");
+    if (n === 1) return [[1/d]];
+
+    const cof = M.map((row,i) => row.map((_,j) => {
+        const minor = M.filter((_,r) => r !== i)
+            .map(row => row.filter((_,c) => c !== j));
+        return ((i+j)%2 ? -1 : 1)*determinant(minor);
+    }));
+
+    return transpose(cof).map(row => row.map(v => v/d));
+}
+
+function adjoint(M) {
+    const n = M.length;
+    if (n === 1) return [[1]];
+    return transpose(M.map((row,i) => row.map((_,j) => {
+        const minor = M.filter((_,r) => r !== i)
+            .map(row => row.filter((_,c) => c !== j));
+        return ((i+j)%2 ? -1 : 1)*determinant(minor);
+    })));
+}
+
+function renderMatrices() {
+    const n=number("size"), op=$("matOp").value;
+    const root=$("matrixInputs");
+    root.innerHTML="";
+
+    for (const name of (["add","sub","mul"].includes(op) ? ["A","B"] : ["A"])) {
+        const heading=document.createElement("h3");
+        heading.textContent="Matrix "+name;
+        root.appendChild(heading);
+
+        const grid=document.createElement("div");
+        grid.className="matrix";
+        grid.style.gridTemplateColumns=`repeat(${n}, minmax(0, 1fr))`;
+
+        for (let i=0;i<n;i++) {
+            for (let j=0;j<n;j++) {
+                const input=document.createElement("input");
+                input.type="number";
+                input.step="any";
+                input.value=i===j ? "1" : "0";
+                input.id=`${name}_${i}_${j}`;
+                grid.appendChild(input);
+            }
+        }
+        root.appendChild(grid);
+    }
+}
+
+function readMatrix(name,n) {
+    return Array.from({length:n},(_,i) =>
+        Array.from({length:n},(_,j) => {
+            const input=$(`${name}_${i}_${j}`);
+            if (input.value.trim()==="") throw Error("Fill every matrix cell.");
+            return Number(input.value);
+        })
+    );
+}
+
+function calculateMatrix() {
+    try {
+        const n=number("size"), op=$("matOp").value;
+        const A=readMatrix("A",n);
+        let R;
+
+        if (op==="det") {
+            $("matrixResult").textContent="det(A) = "+fmt(determinant(A));
+            return;
+        }
+
+        if (op==="inv") R=inverse(A);
+        else if (op==="adj") R=adjoint(A);
+        else {
+            const B=readMatrix("B",n);
+            R=A.map((row,i) => row.map((v,j) => {
+                if (op==="add") return v+B[i][j];
+                if (op==="sub") return v-B[i][j];
+                let sum=0;
+                for (let k=0;k<n;k++) sum+=A[i][k]*B[k][j];
+                return sum;
+            }));
+        }
+
+        $("matrixResult").textContent =
+            R.map(row => row.map(fmt).join("\t")).join("\n");
+    } catch(e) {
+        $("matrixResult").textContent="Error: "+e.message;
+    }
+}
+
+$("size").addEventListener("change",renderMatrices);
+$("matOp").addEventListener("change",renderMatrices);
+renderMatrices();
+updateOperation();
+</script>
+</body>
+</html>
