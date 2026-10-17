@@ -275,6 +275,8 @@ int main() {
     cout << " permutation: a (n P r)\n";
     cout << " combinations:b (n C r)\n";
     cout << " matrices:    m (nxn matrix algebra)\n";
+    cout << " Bitwise:     & (AND), | (OR), x (XOR), ~ (NOT),\n";
+    cout << "              < (Left Shift), > (Right Shift)\n";
     cout << " Type 'q' or 'e' as the operator to exit\n";
     cout << "=======================================\n";
 
@@ -285,7 +287,7 @@ int main() {
             break;
         }
 
-        cout << "Enter operator (+, -, *, /, ^, %, s, c, t, S, C, T, l, n, z, f, 2, 3, 4, a, b, m or 'q' to quit): ";
+        cout << "Enter operator (+, -, *, /, ^, %, s, c, t, S, C, T, l, n, z, f, &, |, x, ~, <, >, 2, 3, 4, a, b, m or 'q' to quit): ";
         cin >> op;
 
         if (op == 'q' || op == 'Q' || op == 'e' || op == 'E') {
@@ -293,10 +295,10 @@ int main() {
             break;
         }
 
-        bool isUnary = (op == 's' || op == 'c' || op == 't' || 
+        bool isUnary = (op == 's' || op == 'c' || op == 't' ||
                         op == 'S' || op == 'C' || op == 'T' ||
                         op == 'l' || op == 'n' || op == 'f' ||
-                        op == 'm' );
+                        op == 'm' || op == '~');
 
         if (!isUnary) {
             cout << "Enter second number (or 'b' for solvers): ";
@@ -381,6 +383,25 @@ int main() {
             case 'f':
                 cout << "Result: factorial of (" << num1 << ") = " << factorial(num1) << "\n";
                 break;
+
+            case '&':
+            cout << "Result: " << (int)num1 << " & " << (int)num2 << " = " << ((int)num1 & (int)num2) << "\n";
+            break;
+            case '|':
+            cout << "Result: " << (int)num1 << " | " << (int)num2 << " = " << ((int)num1 | (int)num2) << "\n";
+            break;
+            case 'x': 
+            cout << "Result: " << (int)num1 << " XOR " << (int)num2 << " = " << ((int)num1 ^ (int)num2) << "\n";
+            break;
+            case '~':
+            cout << "Result: ~" << (int)num1 << " = " << (~(int)num1) << "\n";
+            break;
+            case '<':
+            cout << "Result: " << (int)num1 << " << " << (int)num2 << " = " << ((int)num1 << (int)num2) << "\n";
+            break;
+            case '>':
+            cout << "Result: " << (int)num1 << " >> " << (int)num2 << " = " << ((int)num1 >> (int)num2) << "\n";
+            break;
 
             case '2':
                 double c_quad;
